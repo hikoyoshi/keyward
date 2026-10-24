@@ -1,0 +1,16 @@
+/* Desktop-only additions on top of the prototype stylesheet. */
+.shell{min-height:100vh}
+body{background:var(--bg);user-select:none}
+input,textarea,.password-view,.keyvalue{user-select:text}
+.password-view{user-select:none}
+.reason{margin-bottom:16px}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.later{color:var(--muted)}
+.later li{margin:6px 0}
+@media(max-width:1000px){.settings-grid{grid-template-columns:1fr}}
+.password-view{white-space:pre-wrap;word-break:break-all}
+.table-wrap{max-height:280px;overflow:auto;border:1px solid var(--border);border-radius:8px;margin:8px 0}.table-wrap .preview th{position:sticky;top:0;background:#fff}.links{margin-top:12px}
+.danger-text{color:var(--bad)}.client:last-of-type{border-bottom:0}
+.ai-info{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;margin:6px 0}.ai-info dt{color:var(--muted);font-size:13px}.ai-info dd{margin:0}.approve details{margin:4px 0}.approve details p{margin:4px 0}
+#modal .approve-actions{position:sticky;bottom:-22px;margin:12px -26px -22px;padding:12px 26px;background:#fff;border-top:1px solid var(--border)}.approve-actions{justify-content:flex-end}
+#modal:has(.approve-actions){max-width:600px}

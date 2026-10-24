@@ -1,0 +1,27 @@
+# Build output
+app/build/
+app/dist/
+*.exe
+*.exe~
+
+# Local tool settings (contain machine paths)
+.claude/
+
+# Screenshots from development walkthroughs (kept local)
+review/
+
+# Never commit vaults, backups, imports or test data
+*.db
+*.db-wal
+*.db-shm
+*.keyward
+*.passpw
+*.csv
+*.keyward-backup-*
+harness-data/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

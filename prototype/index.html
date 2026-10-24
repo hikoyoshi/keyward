@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PASS_PW · 流程演練</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<div class="demo">互動原型 · 僅使用假資料，請勿輸入真實帳密。尚未實作加密、寄信、網站登入或 MCP。</div>
+<div id="app"></div>
+<section class="lab" aria-label="演練控制台"><details><summary>演練控制台（正式產品不顯示）</summary>
+<p>主密碼可自訂（至少 12 字元），建議用 <code>DemoMaster!2026</code>。示範備份檔密碼：<code>DemoBackup!2026</code>。Email 驗證碼每次隨機產生，顯示在驗證碼對話框的「示範信箱」。重新整理會清除所有狀態。</p>
+<div class="lab-group"><strong>AI 代理</strong><button data-lab="request">AI 提出登入要求</button><button data-lab="approve-timeout">核准逾時（2 分鐘）</button><button data-lab="snapshot">AI 取得頁面快照</button><button data-lab="fill-ok">AI 要求填入帳密</button><button data-lab="fill-bad">AI 在假冒網址要求填入</button><button data-lab="type-pw">AI 對密碼欄位輸入</button><button data-lab="expire-session">AI 授權到期</button></div>
+<div class="lab-group"><strong>時間與系統</strong><button data-lab="idle">閒置自動鎖定</button><button data-lab="winlock">Windows 鎖定</button><button data-lab="sleep">電腦休眠</button><button data-lab="stale">本人驗證逾 60 秒</button><button data-lab="reset">重新首次設定</button></div>
+<div class="lab-group"><strong>Email</strong><button data-lab="mail">切換寄信失敗</button><button data-lab="hour">過了一小時</button><button data-lab="unpause">結束 Email 暫停</button></div>
+<p id="lab-state"></p>
+</details></section>
+<dialog id="modal" aria-labelledby="dialog-title"></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body></html>

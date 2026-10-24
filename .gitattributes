@@ -1,0 +1,5 @@
+* text=auto
+*.cmd text eol=crlf
+app/portable/*.txt text eol=crlf
+*.png binary
+*.jpg binary
