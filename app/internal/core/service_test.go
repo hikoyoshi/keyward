@@ -341,13 +341,17 @@ func TestGenerate(t *testing.T) {
 }
 
 func TestPasswordRule(t *testing.T) {
-	ok := []string{"Abcdef!1", "Pass@word", "密碼Ab#12345", "A b c d!"}
+	ok := []string{"Kq7!mZ2p", "Blue-Tiger-Rain-42!", "我的密碼本-Rx7#q2", "Correct-horse!1"}
 	bad := []string{
 		"Abc!123",   // 7 characters
 		"abcdefg!1", // no uppercase
 		"Abcdefgh1", // no symbol
 		"Abcd efgh", // a space is not a symbol
 		"",
+		"Password1!", // common password
+		"Qwerty123!", // keyboard pattern
+		"Abcd1234!",  // simple sequence
+		"Keyward1!",  // the app's own name
 	}
 	for _, p := range ok {
 		if err := passwordRule(p, "主密碼"); err != nil {
@@ -362,5 +366,24 @@ func TestPasswordRule(t *testing.T) {
 	e := setup(t)
 	if code(e.s.PrepareExport(master, "backup-lower!", "backup-lower!")) != CodeInvalid {
 		t.Fatal("backup password follows the same rule")
+	}
+}
+
+func TestPasswordStrength(t *testing.T) {
+	cases := []struct {
+		pw    string
+		level int
+		rules bool
+	}{
+		{"", 0, false},
+		{"Password1!", 1, true},
+		{"short", 1, false},
+		{"Kq7!mZ2p", 2, true},
+		{"Blue-Tiger-Rain-42!", 4, true},
+	}
+	for _, c := range cases {
+		if s := PasswordStrength(c.pw); s.Level != c.level || s.Rules != c.rules {
+			t.Errorf("%q: %+v, want level %d rules %v", c.pw, s, c.level, c.rules)
+		}
 	}
 }

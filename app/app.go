@@ -239,6 +239,9 @@ type AIPairingResult struct {
 	ExeFound bool             `json:"exeFound"`
 }
 
+// PasswordStrength rates a new master or backup password for the meter while it is typed.
+func (a *App) PasswordStrength(pw string) core.Strength { return core.PasswordStrength(pw) }
+
 // SetLanguage is called by the window: "en" or "zh-TW". It sets the language of native dialogs and
 // of the code mails.
 func (a *App) SetLanguage(lang string) {

@@ -558,6 +558,13 @@ const I18N_EN = {
 '要停用 Email 驗證碼': 'To turn off Email codes',
 '要匯出備份': 'To export a backup',
 '要不用舊密碼設定新主密碼': 'To set a new master password without the old one',
+// Password strength meter.
+'太容易被猜到': 'Too easy to guess',
+'（還需要至少 8 個字元、大寫字母與符號）': '(still needs 8+ characters, an uppercase letter and a symbol)',
+'太容易被猜到（常見密碼、單字加數字或鍵盤規律）。可以改用幾個不相關的單字加上數字和符號，例如 Blue-Tiger-Rain-42!': ' is too easy to guess (a common password, a word plus digits, or a keyboard pattern). Try a few unrelated words with digits and symbols, for example Blue-Tiger-Rain-42!',
+'普通': 'Fair',
+'很強': 'Very strong',
+'強': 'Strong',
 // Pieces the language setting itself adds.
 '語言': 'Language',
 '自動（依 Windows 語言）': 'Automatic (Windows language)',

@@ -10,7 +10,8 @@ Getting started
 1. Put this folder somewhere permanent, for example D:\Tools\Keyward, and do not move it
    afterwards (AI tools remember the full path of keyward-mcp.exe).
 2. Run keyward.exe and create a master password: at least 8 characters, with an uppercase
-   letter and a symbol.
+   letter and a symbol, and not easy to guess
+   (common passwords such as Password1! are refused; a meter shows the strength).
 3. In Settings, export an encrypted backup and keep it on a USB stick or another drive.
 
 The interface follows the Windows display language (English or Traditional Chinese);

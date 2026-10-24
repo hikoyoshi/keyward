@@ -21,9 +21,13 @@ copy /y portable\README.txt dist\Keyward\ >nul || goto :fail
 copy /y portable\README.zh-TW.txt dist\Keyward\ >nul || goto :fail
 copy /y ..\LICENSE dist\Keyward\LICENSE.txt >nul || goto :fail
 powershell -NoProfile -Command "Compress-Archive -Path 'dist\Keyward' -DestinationPath 'dist\Keyward-portable-%STAMP%.zip' -Force" || goto :fail
+rem SHA-256 next to the zip, in the usual "<hash>  <file>" form, for people to check their download.
+powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $f='%~dp0dist\Keyward-portable-%STAMP%.zip'; $h=(Get-FileHash $f -Algorithm SHA256).Hash.ToLower(); Set-Content -Encoding ascii -NoNewline -Path ($f + '.sha256') -Value ($h + '  ' + (Split-Path $f -Leaf))" || goto :fail
 
 echo.
 echo Done: dist\Keyward-portable-%STAMP%.zip
+type dist\Keyward-portable-%STAMP%.zip.sha256
+echo.
 exit /b 0
 
 :fail

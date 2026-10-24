@@ -360,6 +360,8 @@ func (h *harness) api(w http.ResponseWriter, r *http.Request) {
 		err = s.AIRevokeClient(str(0))
 	case "LockAll":
 		s.Lock(core.ReasonStopAll)
+	case "PasswordStrength":
+		res = core.PasswordStrength(str(0))
 	case "SetLanguage":
 		s.SetLanguage(str(0))
 	case "AIDetectTools":
@@ -441,7 +443,7 @@ const shim = `
   if (d.error) throw new Error(d.error);
   return d.result;
  };
- const methods = ['Status','Setup','Unlock','Lock','Touch','List','Get','Save','Delete','Reveal','Copy','Generate','ChangeMaster','SetIdleMinutes','ExportBackup','PickBackupFile','PreviewRestore','Restore','CancelRestore','PickCSV','ImportCSV','DeleteImportedCSV','SendCode','UnlockWithCode','VerifyCode','Authorize','StartEmailSetup','FinishEmailSetup','EmailSettings','CancelEmailSetup','DisableEmail','ResetMaster','AIOverview','AIApprove','AIDeny','AIStop','AIUserDone','AIExtendGrant','AIRevokeGrant','AIRevokeClient','AIAddClient','AIDetectTools','AIAutoSetup','SetLanguage','LockAll'];
+ const methods = ['Status','Setup','Unlock','Lock','Touch','List','Get','Save','Delete','Reveal','Copy','Generate','ChangeMaster','SetIdleMinutes','ExportBackup','PickBackupFile','PreviewRestore','Restore','CancelRestore','PickCSV','ImportCSV','DeleteImportedCSV','SendCode','UnlockWithCode','VerifyCode','Authorize','StartEmailSetup','FinishEmailSetup','EmailSettings','CancelEmailSetup','DisableEmail','ResetMaster','AIOverview','AIApprove','AIDeny','AIStop','AIUserDone','AIExtendGrant','AIRevokeGrant','AIRevokeClient','AIAddClient','AIDetectTools','AIAutoSetup','SetLanguage','PasswordStrength','LockAll'];
  const App = {}; for (const m of methods) App[m] = (...a) => call(m, a);
  window.go = {main: {App}};
  const handlers = {};

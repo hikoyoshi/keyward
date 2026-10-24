@@ -4,6 +4,7 @@ package core
 import (
 	"crypto/rand"
 	"errors"
+	"github.com/trustelem/zxcvbn"
 	"math/big"
 	"sort"
 	"strconv"
@@ -144,6 +145,51 @@ func (s *Service) Status() Status {
 // passwordRule is shared by the master and backup passwords (the backup may reuse the master):
 // at least 8 characters, one uppercase letter and one symbol. Spaces do not count as the symbol.
 func passwordRule(pw, what string) error {
+	if !structuralOK(pw) {
+		return uerr(CodeInvalid, what+"需要至少 8 個字元，並包含大寫英文字母與特殊符號（例如 ! @ # $）。")
+	}
+	if guesses(pw) < minGuesses {
+		return uerr(CodeInvalid, what+"太容易被猜到（常見密碼、單字加數字或鍵盤規律）。可以改用幾個不相關的單字加上數字和符號，例如 Blue-Tiger-Rain-42!")
+	}
+	return nil
+}
+
+// minGuesses is how many guesses a password must be estimated to need. It turns away common
+// passwords and simple patterns ("Password1!", "Qwerty123!") while a random 8-character password
+// still passes; the strength meter encourages more.
+const minGuesses = 1e8
+
+// guesses estimates the attempts needed to find pw (zxcvbn), counting the app's names as known words.
+func guesses(pw string) float64 {
+	return zxcvbn.PasswordStrength(pw, []string{"keyward", "passpw", "pass_pw"}).Guesses
+}
+
+// Strength is shown under a new master or backup password while it is typed.
+type Strength struct {
+	Level int  `json:"level"` // 0 empty, 1 too weak, 2 fair, 3 strong, 4 very strong
+	Rules bool `json:"rules"` // length, uppercase and symbol are met
+}
+
+// PasswordStrength rates a password for the meter; it never stores or logs it.
+func PasswordStrength(pw string) Strength {
+	if pw == "" {
+		return Strength{}
+	}
+	s := Strength{Rules: structuralOK(pw)}
+	switch g := guesses(pw); {
+	case g < minGuesses:
+		s.Level = 1
+	case g < 1e10:
+		s.Level = 2
+	case g < 1e12:
+		s.Level = 3
+	default:
+		s.Level = 4
+	}
+	return s
+}
+
+func structuralOK(pw string) bool {
 	var upper, symbol bool
 	for _, r := range pw {
 		switch {
@@ -153,10 +199,7 @@ func passwordRule(pw, what string) error {
 			symbol = true
 		}
 	}
-	if utf8.RuneCountInString(pw) < minMaster || !upper || !symbol {
-		return uerr(CodeInvalid, what+"需要至少 8 個字元，並包含大寫英文字母與特殊符號（例如 ! @ # $）。")
-	}
-	return nil
+	return utf8.RuneCountInString(pw) >= minMaster && upper && symbol
 }
 
 func checkNewMaster(pw, confirm string) error {

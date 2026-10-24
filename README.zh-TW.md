@@ -15,6 +15,7 @@ Keyward（Key＋Steward，鑰匙管家）把你的網站帳密和其它機密加
 - 顯示或複製密碼；剪貼簿 30 秒後清除，並排除在剪貼簿歷程與雲端同步之外。
 - 密碼產生器、搜尋與類型篩選。
 - 閒置、Windows 鎖定、電腦休眠時自動鎖定。
+- 主密碼與備份密碼的強度檢查：常見密碼與簡單規律會被拒絕（以 zxcvbn 估算）。
 - 加密備份（`.keyward`），只要備份密碼就能在任何電腦還原；還原時不會覆寫目前的密碼庫。
 - 匯入 Chrome、Edge、Firefox、Bitwarden 匯出的 CSV，先預覽並略過重複項目。
 - 選配的 Email 6 位數驗證碼（使用你自己的 SMTP 帳號）：可用來解鎖、顯示密碼，或重設忘記的主密碼。
@@ -44,7 +45,12 @@ Keyward（Key＋Steward，鑰匙管家）把你的網站帳密和其它機密加
 ## 安裝（portable 版）
 
 1. 從 [Releases](https://github.com/hikoyoshi/keyward/releases) 下載 `Keyward-portable-日期.zip`，解壓到固定的資料夾（例如 `D:\Tools\Keyward`）。之後不要搬動，因為 AI 工具會記住 `keyward-mcp.exe` 的完整路徑。
-2. 執行 `keyward.exe`，建立主密碼（至少 8 個字元，含大寫英文字母與特殊符號）。
+   想確認下載的檔案沒有被替換，可以比對 Release 附的 `.sha256` 檔：
+   ```powershell
+   (Get-FileHash .\Keyward-portable-日期.zip -Algorithm SHA256).Hash
+   ```
+   執行檔目前沒有數位簽章，第一次執行時 Windows SmartScreen 可能會跳出警告。
+2. 執行 `keyward.exe`，建立主密碼：至少 8 個字元，含大寫英文字母與特殊符號，而且不能太容易被猜到。`Password1!` 這類常見密碼或簡單規律會被拒絕，輸入時會顯示強度。用幾個不相關的單字加上數字和符號（例如 `Blue-Tiger-Rain-42!`）既強又好記。
 3. 到「設定」匯出一份加密備份，存到另一個磁碟。
 
 系統需求：Windows 10 或 11（內建 WebView2）。AI 代理登入需要 Google Chrome。密碼庫存放在 `%LOCALAPPDATA%\Keyward`，不在程式資料夾裡，刪除程式資料夾不會刪除密碼。

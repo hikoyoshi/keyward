@@ -15,6 +15,7 @@ Keyward (*key* + *steward*) keeps your website logins and other secrets in an en
 - Show or copy a password; the clipboard is cleared after 30 seconds and kept out of clipboard history and cloud sync.
 - Password generator, search and type filters.
 - Auto-lock when idle, when Windows locks and when the computer sleeps.
+- A strength check for the master and backup passwords: common passwords and simple patterns are refused (zxcvbn estimate).
 - Encrypted backups (`.keyward`) that restore on any computer with the backup password; restoring never overwrites the current vault.
 - Import from Chrome, Edge, Firefox or Bitwarden CSV exports, with a preview and duplicate detection.
 - Optional 6-digit codes by email (your own SMTP account) to unlock, to reveal a password, or to reset a forgotten master password.
@@ -44,7 +45,12 @@ Keyward (*key* + *steward*) keeps your website logins and other secrets in an en
 ## Install (portable)
 
 1. Download `Keyward-portable-<date>.zip` from the [Releases](https://github.com/hikoyoshi/keyward/releases) page and unzip it to a folder you will keep, for example `D:\Tools\Keyward`. Do not move it later: AI tools remember the path of `keyward-mcp.exe`.
-2. Run `keyward.exe` and create a master password (at least 8 characters, with an uppercase letter and a symbol).
+   To check the download, compare its SHA-256 with the `.sha256` file attached to the release:
+   ```powershell
+   (Get-FileHash .\Keyward-portable-<date>.zip -Algorithm SHA256).Hash
+   ```
+   The executables are not code-signed yet, so Windows SmartScreen may warn the first time you run them.
+2. Run `keyward.exe` and create a master password: at least 8 characters with an uppercase letter and a symbol, and not easy to guess. Common passwords and simple patterns such as `Password1!` are refused; a strength meter shows how you are doing. A few unrelated words with digits and symbols (for example `Blue-Tiger-Rain-42!`) are both strong and memorable.
 3. Export a backup from Settings and keep it on another drive.
 
 Requirements: Windows 10 or 11 (WebView2 is built in). AI login needs Google Chrome. The vault lives in `%LOCALAPPDATA%\Keyward`, not in the program folder, so deleting the program folder does not delete your passwords.

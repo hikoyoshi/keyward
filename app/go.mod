@@ -6,6 +6,7 @@ require (
 	github.com/Microsoft/go-winio v0.6.4
 	github.com/chromedp/chromedp v0.21.0
 	github.com/modelcontextprotocol/go-sdk v1.8.0
+	github.com/trustelem/zxcvbn v1.0.1
 	github.com/wailsapp/wails/v2 v2.17.0
 	golang.org/x/crypto v0.58.0
 	golang.org/x/sys v0.49.0
@@ -16,6 +17,7 @@ require (
 	git.sr.ht/~jackmordaunt/go-toast/v2 v2.0.3 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/chromedp/cdproto v0.157.8 // indirect
+	github.com/dlclark/regexp2 v1.11.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.16 // indirect
 	github.com/go-json-experiment/json v0.0.0-20260213210345-44df1a37e875 // indirect
@@ -41,6 +43,7 @@ require (
 	github.com/samber/lo v1.49.1 // indirect
 	github.com/segmentio/asm v1.1.3 // indirect
 	github.com/segmentio/encoding v0.5.4 // indirect
+	github.com/test-go/testify v1.1.4 // indirect
 	github.com/tkrajina/go-reflector v0.5.8 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect

@@ -581,7 +581,7 @@ func TestRestoreDropsPairings(t *testing.T) {
 	file := export(t, a.env)
 	a.s.Lock(ReasonManual)
 	a.s.PreviewRestore(file, bpw)
-	if _, err := a.s.Restore("Restored!pw1", "Restored!pw1"); err != nil {
+	if _, err := a.s.Restore("Restored-vault!81", "Restored-vault!81"); err != nil {
 		t.Fatal(err)
 	}
 	if _, _, err := a.s.AuthClient(a.token); code(err) != CodeUnauthorized {

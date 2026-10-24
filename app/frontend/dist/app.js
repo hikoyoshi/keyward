@@ -64,7 +64,7 @@ function shell(content){
  return `<div class="shell"><aside><div class="logo">Keyward</div><div class="sublogo">個人密碼管理器</div><nav>${nav.map(([id,l]) => `<button data-nav="${id}" class="${on && (st.view === id || (id === 'vault' && st.view === 'detail')) ? 'active' : ''}" ${on ? '' : 'disabled'}>${l}</button>`).join('')}</nav><div class="aside-note">密碼只存在這台電腦<br>記得定期匯出備份</div></aside><main>${content}</main></div>`;
 }
 function header(title, sub){ return `<div class="top"><div><h1>${title}</h1><p class="muted">${sub}</p></div><div class="title-actions"><button data-action="lock">鎖定密碼庫</button><button class="danger" data-action="lock-all" title="鎖定並停止所有 AI 工作">全部鎖定並停止</button></div></div>`; }
-function masterFields(label){ return `<label for="m1">${label}</label><input id="m1" type="password" autocomplete="off" required><label for="m2">再次輸入</label><input id="m2" type="password" autocomplete="off" required><p class="small muted">至少 8 個字元，並包含大寫英文字母與特殊符號（例如 ! @ # $）。Keyward 不會保存主密碼本身；忘記主密碼將無法解開資料。</p>`; }
+function masterFields(label){ return `<label for="m1">${label}</label><input id="m1" type="password" autocomplete="off" required data-strength><div class="strength" aria-live="polite"></div><label for="m2">再次輸入</label><input id="m2" type="password" autocomplete="off" required><p class="small muted">至少 8 個字元，並包含大寫英文字母與特殊符號（例如 ! @ # $）。Keyward 不會保存主密碼本身；忘記主密碼將無法解開資料。</p>`; }
 
 function setupView(){
  return `<div class="intro"><h1>建立你的密碼庫</h1><p class="muted">主密碼是解開資料的唯一方式，請記住它。</p><div class="panel"><form id="setup-form">${masterFields('主密碼')}<div class="field-error" id="form-error" role="alert"></div><div class="form-actions"><button class="primary" type="submit">建立密碼庫</button></div></form></div><p class="small muted">資料存在這台電腦的使用者資料夾，內容全部加密。</p><div class="panel"><h2>換了電腦或重新安裝？</h2><p class="muted">用之前匯出的 Keyward 備份檔還原。</p><button data-action="restore">從備份還原</button></div></div>`;
@@ -176,7 +176,7 @@ async function editForm(type, d){
 // ---------- backup, restore, CSV ----------
 function exportDialog(viaEmail = false){
  const who = viaEmail ? '<p class="banner">已用 Email 驗證碼確認是你本人。</p>' : `<label for="ex-master">目前的主密碼</label><input id="ex-master" type="password" autocomplete="off" required>${email().enabled ? '<button type="button" class="text" data-action="export-email">改寄 Email 驗證碼確認本人</button>' : ''}`;
- dialog('匯出加密備份', `<form id="export-form">${who}<label for="ex-pass">備份密碼</label><input id="ex-pass" type="password" autocomplete="off" required><label for="ex-confirm">再次輸入備份密碼</label><input id="ex-confirm" type="password" autocomplete="off" required><p class="small muted">規則與主密碼相同（至少 8 個字元，含大寫英文字母與特殊符號），也可以直接用主密碼。還原時只需要備份檔與備份密碼，忘記它就無法還原。驗證通過後會詢問存檔位置；寫入後會立即讀回確認可以還原。</p><div class="field-error" id="form-error" role="alert"></div><div class="form-actions"><button type="button" data-action="cancel-modal">取消</button><button class="primary" type="submit">選擇位置並匯出</button></div></form>`);
+ dialog('匯出加密備份', `<form id="export-form">${who}<label for="ex-pass">備份密碼</label><input id="ex-pass" type="password" autocomplete="off" required data-strength><div class="strength" aria-live="polite"></div><label for="ex-confirm">再次輸入備份密碼</label><input id="ex-confirm" type="password" autocomplete="off" required><p class="small muted">規則與主密碼相同（至少 8 個字元，含大寫英文字母與特殊符號），也可以直接用主密碼。還原時只需要備份檔與備份密碼，忘記它就無法還原。驗證通過後會詢問存檔位置；寫入後會立即讀回確認可以還原。</p><div class="field-error" id="form-error" role="alert"></div><div class="form-actions"><button type="button" data-action="cancel-modal">取消</button><button class="primary" type="submit">選擇位置並匯出</button></div></form>`);
 }
 function restoreDialog(file = ''){
  const keep = st.status.initialized ? '<p class="small muted">目前的密碼庫不會被覆寫：它的檔案會改名保留在同一個資料夾，之後仍可用原本的主密碼開啟。</p>' : '';
@@ -310,6 +310,23 @@ document.addEventListener('click', e => {
  actions[b.dataset.action]?.(b);
 });
 let searchTimer;
+// Strength meter under a new master or backup password. The core rates it; nothing is stored.
+const STRENGTH_LABEL = ['', '太容易被猜到', '普通', '強', '很強'];
+let strengthTimer, strengthSeq = 0;
+document.addEventListener('input', e => {
+ if(!e.target.matches?.('[data-strength]')) return;
+ const input = e.target, box = input.nextElementSibling;
+ clearTimeout(strengthTimer);
+ strengthTimer = setTimeout(async () => {
+  const seq = ++strengthSeq;
+  let s = {level: 0, rules: false};
+  if(input.value) try { s = await api().PasswordStrength(input.value); } catch(err){ return; }
+  if(seq !== strengthSeq) return; // a newer keystroke is being rated
+  if(!box || !box.classList.contains('strength')) return;
+  box.dataset.level = s.level;
+  box.innerHTML = s.level ? `<span class="bar"><i></i><i></i><i></i><i></i></span><span>${STRENGTH_LABEL[s.level]}</span>${s.rules ? '' : '<span class="muted">（還需要至少 8 個字元、大寫字母與符號）</span>'}` : '';
+ }, 150);
+});
 document.addEventListener('input', e => {
  if(e.target.id !== 'search') return;
  st.search = e.target.value;
